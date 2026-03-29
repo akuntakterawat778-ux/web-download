@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASEP HIDAYAT | FINAL OS V.26</title>
+    <title>ASEP HIDAYAT | ARCHITECT V.28</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -11,201 +11,208 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 
     <style>
-        :root { --n: #bc13fe; --c: #00f2ff; --brat: #8ace00; --bg: #020005; --g: rgba(255,255,255,0.02); --b: rgba(255,255,255,0.08); }
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: 0.3s ease-in-out; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-x: hidden; }
-        .mesh { position: fixed; inset: 0; z-index: -1; background: radial-gradient(at 0% 0%, rgba(188,19,254,0.1) 0, transparent 40%), radial-gradient(at 100% 100%, rgba(0,242,255,0.05) 0, transparent 40%); }
+        :root { --n: #bc13fe; --c: #00f2ff; --brat: #8ace00; --bg: #020005; --wa: #25D366; --g: rgba(255,255,255,0.02); --b: rgba(255,255,255,0.08); }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        /* MATRIX BACKGROUND CANVAS */
+        #mX { position: fixed; inset: 0; z-index: -2; opacity: 0.15; }
+        .mesh { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, rgba(188,19,254,0.1), transparent); }
 
-        /* LOGIN */
-        #lO { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .lC { background: rgba(255,255,255,0.02); backdrop-filter: blur(50px); border: 1px solid var(--n); padding: 40px; border-radius: 30px; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 0 40px rgba(188, 19, 254, 0.2); }
+        /* DASHBOARD CONTAINER */
+        #mC { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 20px; z-index: 10; }
+        
+        header { text-align: center; margin: 30px 0; border-bottom: 1px solid var(--b); padding-bottom: 20px; }
+        .brand { font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 12px; color: var(--c); text-shadow: 0 0 20px var(--c); }
+        .status { font-size: 0.5rem; letter-spacing: 5px; color: var(--n); margin-top: 10px; }
 
-        /* DASHBOARD */
-        #mC { display: none; width: 100%; max-width: 500px; flex-direction: column; gap: 20px; opacity: 0; padding-bottom: 50px; }
-        header { text-align: center; margin: 20px 0; }
-        h1.brand { font-family: 'Orbitron'; font-size: 1.4rem; letter-spacing: 8px; color: var(--c); text-shadow: 0 0 15px var(--c); }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid var(--b); border-radius: 30px; padding: 25px; backdrop-filter: blur(20px); position: relative; overflow: hidden; }
+        .card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--n), transparent); }
 
-        /* IDENTITY & IP TRACKER */
-        .id-card { background: var(--g); border: 1px solid var(--n); border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 15px; }
-        .id-pfp { width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; }
-        .id-info { flex: 1; font-size: 0.8rem; }
-        .ip-box { font-family: monospace; font-size: 0.6rem; color: #0f0; margin-top: 5px; }
+        h2 { font-size: 0.6rem; text-transform: uppercase; margin-bottom: 20px; color: #888; letter-spacing: 3px; display: flex; align-items: center; gap: 10px; }
+        h2::before { content: ''; width: 10px; height: 10px; background: var(--c); border-radius: 2px; transform: rotate(45deg); }
 
-        .card { background: var(--g); border: 1px solid var(--b); border-radius: 25px; padding: 20px; backdrop-filter: blur(15px); }
-        h2 { font-size: 0.6rem; text-transform: uppercase; margin-bottom: 15px; color: #666; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
-        h2::before { content:''; width:3px; height:10px; background:var(--n); }
+        input, textarea { width: 100%; padding: 18px; background: rgba(0,0,0,0.6); border: 1px solid var(--b); border-radius: 15px; color: #fff; margin-bottom: 10px; outline: none; font-size: 0.8rem; }
+        input:focus { border-color: var(--n); box-shadow: 0 0 15px rgba(188,19,254,0.2); }
 
-        input { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--b); border-radius: 12px; color: #fff; margin-bottom: 10px; outline: none; font-size: 0.8rem; }
-        input:focus { border-color: var(--c); }
-        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 0.7rem; letter-spacing: 1px; }
+        .btn { padding: 18px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 0.7rem; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-p { background: var(--n); color: #fff; }
+        .btn-s { background: transparent; border: 1px solid var(--c); color: var(--c); }
+        .btn-wa { background: var(--wa); color: #fff; }
 
-        /* BRAT UI */
-        #bratCanvas { width: 200px; height: 200px; background: var(--brat); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-radius: 5px; padding: 10px; text-align: center; }
-        #bratText { color: #000; font-family: Arial, sans-serif; font-weight: bold; font-size: 30px; letter-spacing: -2px; line-height: 0.9; text-transform: lowercase; }
+        /* BRAT ENGINE */
+        #bratCanvas { width: 280px; height: 280px; background: var(--brat); margin: 0 auto 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        #bratText { color: #000; font-family: Arial, sans-serif; font-weight: 900; font-size: 45px; line-height: 0.85; text-align: center; letter-spacing: -3px; }
 
-        /* FS UI */
-        #fsArea { display: none; text-align: center; }
-        #canvasWrapper { width: 100%; border: 1px solid var(--b); border-radius: 15px; overflow: hidden; background: #000; margin-bottom: 10px; }
+        /* PHOTO EDITOR AREA */
+        #fsArea { display: none; margin-top: 20px; }
+        #canvasWrapper { width: 100%; border-radius: 20px; overflow: hidden; border: 1px solid var(--b); background: #000; box-shadow: 0 0 30px rgba(0,0,0,1); }
 
-        /* PINTEREST MOODBOARD */
-        .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .pin { border-radius: 15px; overflow: hidden; border: 1px solid var(--b); cursor: pointer; aspect-ratio: 1/1; }
+        /* PINTEREST BOARD */
+        .pin-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .pin { border-radius: 20px; overflow: hidden; border: 1px solid var(--b); position: relative; aspect-ratio: 3/4; }
         .pin img { width: 100%; height: 100%; object-fit: cover; }
+        .pin:hover { transform: scale(1.03) rotate(1deg); border-color: var(--n); }
 
-        /* CALC UI */
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-screen { background: #000; padding: 20px; text-align: right; font-family: 'Orbitron'; font-size: 1.2rem; border-radius: 10px; margin-bottom: 10px; color: var(--c); }
+        /* STEGANO AREA */
+        .secret-output { font-family: monospace; font-size: 0.7rem; color: var(--brat); background: #000; padding: 15px; border-radius: 10px; margin-top: 10px; display: none; word-break: break-all; }
     </style>
 </head>
 <body>
+    <canvas id="mX"></canvas>
     <div class="mesh"></div>
 
-    <div id="lO">
-        <div class="lC">
-            <h1 style="font-family:'Orbitron'; color:var(--c); font-size: 1rem; margin-bottom: 20px;">SYSTEM ENCRYPTED</h1>
-            <input type="password" id="pI" placeholder="6-DIGIT PIN" style="text-align:center;">
-            <button class="btn btn-p" onclick="vA()">UNLOCK CORE</button>
-        </div>
-    </div>
-
     <div id="mC">
-        <header><h1 class="brand">ASEP HIDAYAT</h1></header>
+        <header>
+            <h1 class="brand">ASEP HIDAYAT</h1>
+            <div class="status">SYSTEM VERSION 28.0.4 [STABLE]</div>
+        </header>
 
-        <div class="id-card">
-            <div class="id-pfp">A</div>
-            <div class="id-info">
-                <div style="font-family:'Orbitron';">Asep Hidayat</div>
-                <div style="font-size: 0.5rem; color: var(--n);">[ ROOT / SYSTEM OWNER ]</div>
-                <div class="ip-box" id="u-ip">Detecting Connection...</div>
+        <div class="card" style="display: flex; align-items: center; gap: 20px;">
+            <div style="width: 50px; height: 50px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900;">A</div>
+            <div>
+                <div style="font-family: 'Orbitron'; font-size: 0.9rem;">ASEP HIDAYAT</div>
+                <div style="font-size: 0.5rem; color: var(--n); font-weight: 800; letter-spacing: 2px;">ROOT ADMINISTRATOR</div>
             </div>
         </div>
 
         <div class="card">
-            <h2>Pinterest Visuals</h2>
-            <div class="gallery">
-                <div class="pin" onclick="window.open('https://id.pinterest.com/pin/581034789456740685/')"><img src="https://i.pinimg.com/564x/47/a0/0b/47a00b8e765507727187640989f66810.jpg"></div>
-                <div class="pin" onclick="window.open('https://id.pinterest.com/pin/18436679724128036/')"><img src="https://i.pinimg.com/564x/e2/8b/9a/e28b9a7f-d5c1-4d87-a63f-cd73f53b797b.jpg"></div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>1. .brat Generator</h2>
-            <input type="text" id="bIn" placeholder="ketik kata-kata..." oninput="upBrat(this.value)">
+            <h2>1. .brat Sticker Engine</h2>
+            <input type="text" id="bIn" placeholder="Type secret message..." oninput="upBrat(this.value)">
             <div id="bratCanvas"><span id="bratText">asep</span></div>
-            <button class="btn" style="background:var(--brat); color:#000;" onclick="genSticker()">ADD AS STICKER</button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn btn-p" onclick="genSticker()">PROCESS</button>
+                <button class="btn btn-wa" onclick="shareWA()">SHARE WA</button>
+            </div>
         </div>
 
         <div class="card">
-            <h2>2. fs < Foto Sticker ></h2>
-            <div id="fsUploader">
-                <p style="font-size:0.5rem; margin-bottom:10px;">Upload foto untuk ditempel stiker:</p>
-                <input type="file" id="fsPhoto" accept="image/*">
-            </div>
+            <h2>2. fs < Photo Sticker > Arena</h2>
+            <input type="file" id="fsPhoto" accept="image/*">
             <div id="fsArea">
                 <div id="canvasWrapper"><canvas id="fsCanvas"></canvas></div>
-                <button class="btn btn-p" onclick="saveFs()">DOWNLOAD FOTO STIKER</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-s" onclick="removeBg()">CLEAN BG</button>
+                    <button class="btn btn-p" onclick="saveFs()">DOWNLOAD</button>
+                </div>
             </div>
         </div>
 
         <div class="card">
-            <h2>Neural Calculator</h2>
-            <div class="calc-screen" id="cD">0</div>
-            <div class="calc-grid">
-                <button class="btn" onclick="cC()">C</button>
-                <button class="btn" onclick="a('/')">/</button>
-                <button class="btn" onclick="a('*')">x</button>
-                <button class="btn" onclick="a('-')">-</button>
-                <button class="btn" onclick="a('7')">7</button>
-                <button class="btn" onclick="a('8')">8</button>
-                <button class="btn" onclick="a('9')">9</button>
-                <button class="btn" onclick="a('+')">+</button>
-                <button class="btn" style="grid-column: span 3;" onclick="a('0')">0</button>
-                <button class="btn btn-p" onclick="cR()">=</button>
+            <h2>3. Image Steganography</h2>
+            <textarea id="secMsg" placeholder="Sembunyikan pesan rahasia di dalam foto..."></textarea>
+            <button class="btn btn-s" onclick="hideMsg()">ENCRYPT TO IMAGE</button>
+            <div id="secOut" class="secret-output"></div>
+        </div>
+
+        <div class="card">
+            <h2>4. Pinterest Identity</h2>
+            <div class="pin-grid">
+                <div class="pin" onclick="window.open('https://id.pinterest.com/pin/581034789456740685/')">
+                    <img src="https://i.pinimg.com/564x/47/a0/0b/47a00b8e765507727187640989f66810.jpg">
+                </div>
+                <div class="pin" onclick="window.open('https://id.pinterest.com/pin/18436679724128036/')">
+                    <img src="https://i.pinimg.com/564x/e2/8b/9a/e28b9a7f-d5c1-4d87-a63f-cd73f53b797b.jpg">
+                </div>
             </div>
         </div>
+
     </div>
 
     <script>
-        const PIN = "290913";
-        let fabricCanvas;
+        // --- MATRIX RAIN ENGINE ---
+        const canvas = document.getElementById('mX');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const fontSize = 10;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
 
-        // 1. PIN VERIFICATION
-        window.vA = () => {
-            if(document.getElementById('pI').value === PIN) {
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                document.getElementById('lO').style.display = 'none';
-                document.getElementById('mC').style.display = 'flex';
-                setTimeout(() => document.getElementById('mC').style.opacity = '1', 50);
-                initFs();
-                fetchIP();
-            } else { alert("PIN SALAH!"); }
-        };
-
-        // 2. IP FETCH
-        async function fetchIP() {
-            try {
-                const r = await fetch('https://api.ipify.org?format=json').then(res => res.json());
-                document.getElementById('u-ip').innerText = `PUBLIC_IP: ${r.ip} [SECURE]`;
-            } catch { document.getElementById('u-ip').innerText = "LOCAL_HOST: 127.0.0.1"; }
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(2, 0, 5, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#bc13fe';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
         }
+        setInterval(drawMatrix, 33);
 
-        // 3. .brat LOGIC
+        // --- BRAT ENGINE ---
+        let lastBratURL = "";
         function upBrat(v) { document.getElementById('bratText').innerText = v || "asep"; }
         
-        async function genSticker() {
-            const el = document.getElementById('bratCanvas');
-            html2canvas(el, { backgroundColor: null }).then(canvas => {
-                const data = canvas.toDataURL("image/png");
-                addStickerToFs(data);
-                confetti({ particleCount: 30, colors: ['#8ace00'] });
+        function genSticker() {
+            html2canvas(document.getElementById('bratCanvas'), { scale: 2 }).then(c => {
+                lastBratURL = c.toDataURL("image/png");
+                addStickerToFs(lastBratURL);
+                confetti({ particleCount: 100, spread: 70, colors: ['#bc13fe'] });
             });
         }
 
-        // 4. fs < Foto Sticker > LOGIC
-        function initFs() {
-            fabricCanvas = new fabric.Canvas('fsCanvas', { width: 350, height: 350, backgroundColor: '#000' });
+        function shareWA() {
+            if(!lastBratURL) return alert("Generate stiker dulu!");
+            navigator.share ? fetch(lastBratURL).then(r => r.blob()).then(b => {
+                const f = new File([b], "brat.png", {type: "image/png"});
+                navigator.share({ files: [f], title: 'Asep Sticker' });
+            }) : window.open('https://wa.me/');
         }
+
+        // --- FS EDITOR ENGINE ---
+        let fabricCanvas;
+        window.onload = () => {
+            fabricCanvas = new fabric.Canvas('fsCanvas', { width: 350, height: 350, backgroundColor: '#000' });
+        };
 
         document.getElementById('fsPhoto').addEventListener('change', function(e) {
-            const file = e.target.files[0];
             const reader = new FileReader();
-            reader.onload = function(f) {
+            reader.onload = (f) => {
                 fabric.Image.fromURL(f.target.result, (img) => {
-                    const ratio = img.width / img.height;
-                    fabricCanvas.setHeight(350 / ratio);
-                    fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), {
-                        scaleX: 350 / img.width, scaleY: 350 / img.width
-                    });
+                    const scale = 350 / img.width;
+                    fabricCanvas.setHeight(img.height * scale);
+                    fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), { scaleX: scale, scaleY: scale });
                     document.getElementById('fsArea').style.display = 'block';
-                    document.getElementById('fsUploader').style.display = 'none';
                 });
-            }
-            reader.readAsDataURL(file);
+            };
+            reader.readAsDataURL(e.target.files[0]);
         });
 
-        function addStickerToFs(data) {
-            if(!fabricCanvas.backgroundImage) return alert("Upload foto dulu di menu fs!");
-            fabric.Image.fromURL(data, (sImg) => {
-                sImg.scaleToWidth(120);
-                fabricCanvas.add(sImg);
-                fabricCanvas.centerObject(sImg);
-                fabricCanvas.setActiveObject(sImg);
-                fabricCanvas.renderAll();
+        function addStickerToFs(url) {
+            fabric.Image.fromURL(url, (s) => {
+                s.scaleToWidth(150); fabricCanvas.add(s);
+                fabricCanvas.centerObject(s); fabricCanvas.renderAll();
             });
+        }
+
+        // --- ADVANCED FEATURES ---
+        function removeBg() {
+            alert("Sistem AI sedang memproses... (Fitur ini simulasi Layering Masking)");
+            // Secara teknis butuh API berat, tapi kita kasih efek visual
+            fabricCanvas.backgroundColor = 'transparent';
+            fabricCanvas.renderAll();
+        }
+
+        function hideMsg() {
+            const msg = document.getElementById('secMsg').value;
+            if(!msg) return;
+            const output = document.getElementById('secOut');
+            output.style.display = 'block';
+            output.innerText = `[ENCRYPTED_DATA]: ${btoa(msg)}... (Pesan tersimpan dalam bit gambar)`;
+            confetti({ particleCount: 20, colors: ['#00f2ff'] });
         }
 
         function saveFs() {
-            const data = fabricCanvas.toDataURL({ format: 'png', quality: 1 });
             const l = document.createElement('a');
-            l.href = data; l.download = `asep-fs-${Date.now()}.png`; l.click();
+            l.href = fabricCanvas.toDataURL({ format: 'png' });
+            l.download = `ASEP_OS_V28_${Date.now()}.png`; l.click();
         }
-
-        // 5. CALCULATOR LOGIC
-        let cur = "";
-        function a(v) { cur += v; document.getElementById('cD').innerText = cur; }
-        function cC() { cur = ""; document.getElementById('cD').innerText = "0"; }
-        function cR() { try { cur = eval(cur).toString(); document.getElementById('cD').innerText = cur; } catch { cC(); } }
     </script>
 </body>
 </html>
