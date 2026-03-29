@@ -3,215 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASEP HIDAYAT | ARCHITECT V.28</title>
+    <title>ASEP HIDAYAT | CORE V.31</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 
     <style>
-        :root { --n: #bc13fe; --c: #00f2ff; --brat: #8ace00; --bg: #020005; --wa: #25D366; --g: rgba(255,255,255,0.02); --b: rgba(255,255,255,0.08); }
-        * { box-sizing: border-box; margin: 0; padding: 0; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        :root { --n: #bc13fe; --c: #00f2ff; --bg: #020005; --b: rgba(255,255,255,0.08); }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         
-        /* MATRIX BACKGROUND CANVAS */
-        #mX { position: fixed; inset: 0; z-index: -2; opacity: 0.15; }
-        .mesh { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, rgba(188,19,254,0.1), transparent); }
+        #mX { position: fixed; inset: 0; z-index: -1; opacity: 0.15; }
 
-        /* DASHBOARD CONTAINER */
-        #mC { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 20px; z-index: 10; }
+        /* 1. INITIAL BOOT & PIN MENU (MENU AWAL KECE) */
+        #bootLayer { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .boot-card { background: rgba(255,255,255,0.03); border: 1px solid var(--n); padding: 40px; border-radius: 40px; text-align: center; backdrop-filter: blur(50px); width: 90%; max-width: 400px; box-shadow: 0 0 50px rgba(188, 19, 254, 0.2); }
+        .boot-card h1 { font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 10px; color: var(--c); margin-bottom: 30px; }
+        .pin-input { background: none; border: none; border-bottom: 2px solid var(--n); color: #fff; font-size: 2rem; text-align: center; width: 100%; letter-spacing: 15px; margin-bottom: 30px; font-family: 'Orbitron'; }
+
+        /* 2. DASHBOARD MAIN */
+        #mainDash { display: none; width: 100%; max-width: 500px; padding: 20px; flex-direction: column; gap: 20px; opacity: 0; transition: 1.5s; }
         
-        header { text-align: center; margin: 30px 0; border-bottom: 1px solid var(--b); padding-bottom: 20px; }
-        .brand { font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 12px; color: var(--c); text-shadow: 0 0 20px var(--c); }
-        .status { font-size: 0.5rem; letter-spacing: 5px; color: var(--n); margin-top: 10px; }
+        header { text-align: center; margin-bottom: 10px; }
+        .brand { font-family: 'Orbitron'; font-size: 1.5rem; letter-spacing: 12px; color: var(--c); text-shadow: 0 0 15px var(--c); }
 
-        .card { background: rgba(255,255,255,0.03); border: 1px solid var(--b); border-radius: 30px; padding: 25px; backdrop-filter: blur(20px); position: relative; overflow: hidden; }
-        .card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--n), transparent); }
+        .card { background: rgba(255,255,255,0.02); border: 1px solid var(--b); border-radius: 30px; padding: 25px; backdrop-filter: blur(30px); position: relative; }
+        
+        /* USER INFO AREA */
+        .user-box { display: flex; align-items: center; gap: 20px; }
+        .pfp { width: 55px; height: 55px; border: 2px solid var(--n); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-family: 'Orbitron'; box-shadow: 0 0 15px var(--n); }
+        .user-id { font-size: 0.6rem; color: #888; font-weight: 800; letter-spacing: 2px; margin-top: 5px; }
 
-        h2 { font-size: 0.6rem; text-transform: uppercase; margin-bottom: 20px; color: #888; letter-spacing: 3px; display: flex; align-items: center; gap: 10px; }
-        h2::before { content: ''; width: 10px; height: 10px; background: var(--c); border-radius: 2px; transform: rotate(45deg); }
+        /* DOWNLOADER MENU (BAGUS VERSION) */
+        .dl-input-group { position: relative; margin-top: 15px; }
+        .dl-input { width: 100%; padding: 18px 20px; background: rgba(0,0,0,0.5); border: 1px solid var(--b); border-radius: 18px; color: #fff; font-size: 0.8rem; }
+        .dl-input:focus { border-color: var(--c); }
+        .dl-btn { background: var(--n); color: #fff; border: none; border-radius: 15px; padding: 15px; margin-top: 10px; width: 100%; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .dl-btn:hover { box-shadow: 0 0 25px var(--n); transform: scale(1.02); }
 
-        input, textarea { width: 100%; padding: 18px; background: rgba(0,0,0,0.6); border: 1px solid var(--b); border-radius: 15px; color: #fff; margin-bottom: 10px; outline: none; font-size: 0.8rem; }
-        input:focus { border-color: var(--n); box-shadow: 0 0 15px rgba(188,19,254,0.2); }
+        /* IP & STATUS */
+        .status-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .stat { background: #000; padding: 12px; border-radius: 15px; border: 1px solid var(--b); text-align: center; }
+        .stat label { font-size: 0.5rem; color: #555; display: block; margin-bottom: 5px; }
+        .stat span { font-size: 0.7rem; font-family: monospace; color: var(--c); }
 
-        .btn { padding: 18px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 0.7rem; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-p { background: var(--n); color: #fff; }
-        .btn-s { background: transparent; border: 1px solid var(--c); color: var(--c); }
-        .btn-wa { background: var(--wa); color: #fff; }
-
-        /* BRAT ENGINE */
-        #bratCanvas { width: 280px; height: 280px; background: var(--brat); margin: 0 auto 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        #bratText { color: #000; font-family: Arial, sans-serif; font-weight: 900; font-size: 45px; line-height: 0.85; text-align: center; letter-spacing: -3px; }
-
-        /* PHOTO EDITOR AREA */
-        #fsArea { display: none; margin-top: 20px; }
-        #canvasWrapper { width: 100%; border-radius: 20px; overflow: hidden; border: 1px solid var(--b); background: #000; box-shadow: 0 0 30px rgba(0,0,0,1); }
-
-        /* PINTEREST BOARD */
-        .pin-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .pin { border-radius: 20px; overflow: hidden; border: 1px solid var(--b); position: relative; aspect-ratio: 3/4; }
-        .pin img { width: 100%; height: 100%; object-fit: cover; }
-        .pin:hover { transform: scale(1.03) rotate(1deg); border-color: var(--n); }
-
-        /* STEGANO AREA */
-        .secret-output { font-family: monospace; font-size: 0.7rem; color: var(--brat); background: #000; padding: 15px; border-radius: 10px; margin-top: 10px; display: none; word-break: break-all; }
+        /* COPYRIGHT (CR) */
+        .cr { text-align: center; font-size: 0.55rem; color: #444; margin-top: 30px; font-weight: 800; letter-spacing: 5px; }
     </style>
 </head>
 <body>
     <canvas id="mX"></canvas>
-    <div class="mesh"></div>
 
-    <div id="mC">
-        <header>
-            <h1 class="brand">ASEP HIDAYAT</h1>
-            <div class="status">SYSTEM VERSION 28.0.4 [STABLE]</div>
-        </header>
-
-        <div class="card" style="display: flex; align-items: center; gap: 20px;">
-            <div style="width: 50px; height: 50px; background: #fff; border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900;">A</div>
-            <div>
-                <div style="font-family: 'Orbitron'; font-size: 0.9rem;">ASEP HIDAYAT</div>
-                <div style="font-size: 0.5rem; color: var(--n); font-weight: 800; letter-spacing: 2px;">ROOT ADMINISTRATOR</div>
-            </div>
+    <div id="bootLayer">
+        <div class="boot-card">
+            <h1>SYSTEM LOCK</h1>
+            <input type="password" id="pI" class="pin-input" maxlength="6" placeholder="******">
+            <button onclick="checkPin()" class="dl-btn" style="background:transparent; border:1px solid var(--n);">AUTHENTICATE</button>
+            <p style="font-size: 0.5rem; color: #444; margin-top: 20px; letter-spacing: 2px;">SECURE ACCESS ONLY</p>
         </div>
+    </div>
+
+    <div id="mainDash">
+        <header><h1 class="brand">ASEP.OS</h1></header>
 
         <div class="card">
-            <h2>1. .brat Sticker Engine</h2>
-            <input type="text" id="bIn" placeholder="Type secret message..." oninput="upBrat(this.value)">
-            <div id="bratCanvas"><span id="bratText">asep</span></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="btn btn-p" onclick="genSticker()">PROCESS</button>
-                <button class="btn btn-wa" onclick="shareWA()">SHARE WA</button>
+            <div class="user-box">
+                <div class="pfp">A</div>
+                <div class="info">
+                    <h3 style="font-family:'Orbitron'; font-size: 0.9rem;">ASEP HIDAYAT</h3>
+                    <div class="user-id">ID: 290913-SNIPER-CORE</div>
+                </div>
             </div>
-        </div>
-
-        <div class="card">
-            <h2>2. fs < Photo Sticker > Arena</h2>
-            <input type="file" id="fsPhoto" accept="image/*">
-            <div id="fsArea">
-                <div id="canvasWrapper"><canvas id="fsCanvas"></canvas></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                    <button class="btn btn-s" onclick="removeBg()">CLEAN BG</button>
-                    <button class="btn btn-p" onclick="saveFs()">DOWNLOAD</button>
+            <div class="status-row">
+                <div class="stat">
+                    <label>CONNECTION</label>
+                    <span id="ip">Detecting...</span>
+                </div>
+                <div class="stat">
+                    <label>ACCESS</label>
+                    <span style="color:var(--n)">AUTHORIZED</span>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <h2>3. Image Steganography</h2>
-            <textarea id="secMsg" placeholder="Sembunyikan pesan rahasia di dalam foto..."></textarea>
-            <button class="btn btn-s" onclick="hideMsg()">ENCRYPT TO IMAGE</button>
-            <div id="secOut" class="secret-output"></div>
-        </div>
-
-        <div class="card">
-            <h2>4. Pinterest Identity</h2>
-            <div class="pin-grid">
-                <div class="pin" onclick="window.open('https://id.pinterest.com/pin/581034789456740685/')">
-                    <img src="https://i.pinimg.com/564x/47/a0/0b/47a00b8e765507727187640989f66810.jpg">
-                </div>
-                <div class="pin" onclick="window.open('https://id.pinterest.com/pin/18436679724128036/')">
-                    <img src="https://i.pinimg.com/564x/e2/8b/9a/e28b9a7f-d5c1-4d87-a63f-cd73f53b797b.jpg">
-                </div>
+            <h2 style="font-size: 0.6rem; color: #666; margin-bottom: 15px; letter-spacing: 2px;">⚡ MEDIA DOWNLOADER</h2>
+            <div class="dl-input-group">
+                <input type="text" class="dl-input" id="dlUrl" placeholder="Paste link video (TikTok/IG/YT)...">
+                <button class="dl-btn" onclick="startDl()">
+                    <span>FETCH DATA</span>
+                </button>
             </div>
+            <p style="font-size: 0.5rem; color: #444; margin-top: 15px; text-align: center;">POWERED BY ASEP_DEV_CLOUD</p>
         </div>
 
+        <div class="cr">© 2026 ASEP HIDAYAT | PRIVATE CORE</div>
     </div>
 
     <script>
-        // --- MATRIX RAIN ENGINE ---
+        const PIN_KEY = "290913";
+
+        // Matrix Background
         const canvas = document.getElementById('mX');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const fontSize = 10;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const drops = Array(Math.floor(canvas.width/15)).fill(1);
         function drawMatrix() {
-            ctx.fillStyle = 'rgba(2, 0, 5, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#bc13fe';
-            ctx.font = fontSize + 'px monospace';
-            for (let i = 0; i < drops.length; i++) {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            ctx.fillStyle = 'rgba(2, 0, 5, 0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#bc13fe'; ctx.font = '12px monospace';
+            drops.forEach((y, i) => {
+                const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                ctx.fillText(text, i * 15, y * 15);
+                if (y * 15 > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
+            });
+        }
+        setInterval(drawMatrix, 40);
+
+        // PIN Logic
+        function checkPin() {
+            const input = document.getElementById('pI').value;
+            if(input === PIN_KEY) {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#00f2ff', '#bc13fe'] });
+                document.getElementById('bootLayer').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('bootLayer').style.display = 'none';
+                    const dash = document.getElementById('mainDash');
+                    dash.style.display = 'flex';
+                    setTimeout(() => dash.style.opacity = '1', 50);
+                    fetchIP();
+                }, 1000);
+            } else {
+                alert("ACCESS DENIED: WRONG PIN");
+                document.getElementById('pI').value = "";
             }
         }
-        setInterval(drawMatrix, 33);
 
-        // --- BRAT ENGINE ---
-        let lastBratURL = "";
-        function upBrat(v) { document.getElementById('bratText').innerText = v || "asep"; }
-        
-        function genSticker() {
-            html2canvas(document.getElementById('bratCanvas'), { scale: 2 }).then(c => {
-                lastBratURL = c.toDataURL("image/png");
-                addStickerToFs(lastBratURL);
-                confetti({ particleCount: 100, spread: 70, colors: ['#bc13fe'] });
-            });
+        // Fetch IP
+        function fetchIP() {
+            fetch('https://api.ipify.org?format=json')
+                .then(r => r.json())
+                .then(d => document.getElementById('ip').innerText = d.ip)
+                .catch(() => document.getElementById('ip').innerText = "LOCAL_CORE");
         }
 
-        function shareWA() {
-            if(!lastBratURL) return alert("Generate stiker dulu!");
-            navigator.share ? fetch(lastBratURL).then(r => r.blob()).then(b => {
-                const f = new File([b], "brat.png", {type: "image/png"});
-                navigator.share({ files: [f], title: 'Asep Sticker' });
-            }) : window.open('https://wa.me/');
-        }
-
-        // --- FS EDITOR ENGINE ---
-        let fabricCanvas;
-        window.onload = () => {
-            fabricCanvas = new fabric.Canvas('fsCanvas', { width: 350, height: 350, backgroundColor: '#000' });
-        };
-
-        document.getElementById('fsPhoto').addEventListener('change', function(e) {
-            const reader = new FileReader();
-            reader.onload = (f) => {
-                fabric.Image.fromURL(f.target.result, (img) => {
-                    const scale = 350 / img.width;
-                    fabricCanvas.setHeight(img.height * scale);
-                    fabricCanvas.setBackgroundImage(img, fabricCanvas.renderAll.bind(fabricCanvas), { scaleX: scale, scaleY: scale });
-                    document.getElementById('fsArea').style.display = 'block';
-                });
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        function addStickerToFs(url) {
-            fabric.Image.fromURL(url, (s) => {
-                s.scaleToWidth(150); fabricCanvas.add(s);
-                fabricCanvas.centerObject(s); fabricCanvas.renderAll();
-            });
-        }
-
-        // --- ADVANCED FEATURES ---
-        function removeBg() {
-            alert("Sistem AI sedang memproses... (Fitur ini simulasi Layering Masking)");
-            // Secara teknis butuh API berat, tapi kita kasih efek visual
-            fabricCanvas.backgroundColor = 'transparent';
-            fabricCanvas.renderAll();
-        }
-
-        function hideMsg() {
-            const msg = document.getElementById('secMsg').value;
-            if(!msg) return;
-            const output = document.getElementById('secOut');
-            output.style.display = 'block';
-            output.innerText = `[ENCRYPTED_DATA]: ${btoa(msg)}... (Pesan tersimpan dalam bit gambar)`;
-            confetti({ particleCount: 20, colors: ['#00f2ff'] });
-        }
-
-        function saveFs() {
-            const l = document.createElement('a');
-            l.href = fabricCanvas.toDataURL({ format: 'png' });
-            l.download = `ASEP_OS_V28_${Date.now()}.png`; l.click();
+        // Downloader Simulation
+        function startDl() {
+            const url = document.getElementById('dlUrl').value;
+            if(!url) return alert("Paste linknya dulu Sep!");
+            alert("Sistem Downloader sedang memproses link: " + url.substring(0, 20) + "...");
+            // Di sini lo bisa sambungin ke API Downloader gratisan kalo mau
         }
     </script>
 </body>
