@@ -37,19 +37,15 @@
         input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
         .btn { padding: 18px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; transition: 0.2s; width: 100%; }
         .btn-n { background: var(--neon); color: #fff; box-shadow: 0 5px 20px rgba(188, 19, 254, 0.4); }
-        .btn-n:active { transform: scale(0.95); }
 
-        /* --- GAME & TOOLS --- */
+        /* --- TOOLS UI --- */
         .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .cell { aspect-ratio: 1/1; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .cell:hover { background: rgba(188, 19, 254, 0.1); }
-        
         .c-scr { font-family: 'Orbitron'; font-size: 2rem; text-align: right; color: var(--cyan); padding: 25px; background: #000; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); }
         .c-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .c-btn { padding: 18px 0; border-radius: 15px; border: 1px solid var(--border); background: var(--glass); color: #fff; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
-        .c-btn:hover { background: rgba(255,255,255,0.1); }
+        .c-btn { padding: 18px 0; border-radius: 15px; border: 1px solid var(--border); background: var(--glass); color: #fff; font-weight: 800; cursor: pointer; }
 
-        .footer { text-align: center; margin-top: 20px; font-size: 0.5rem; letter-spacing: 5px; color: #333; font-weight: 900; text-transform: uppercase; }
+        .footer { text-align: center; margin-top: 20px; font-size: 0.5rem; letter-spacing: 5px; color: #333; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -137,19 +133,19 @@
             }
         };
 
-        // 2. GEMINI ENGINE
+        // 2. GEMINI ENGINE - API KEY SUDAH TERPASANG SEP!
         const API_KEY = "AIzaSyBOT0AdkWJbFf0WsvLwgOcP3T9ds4AReZE";
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ 
             model: "gemini-1.5-flash",
-            systemInstruction: "Nama kamu adalah Gemini AI, asisten pribadi milik Asep Hidayat. Kamu harus selalu ramah, cerdas, dan panggil pengguna dengan sebutan 'Sep' atau 'Boss Asep'."
+            systemInstruction: "Nama kamu adalah Gemini AI, asisten pribadi milik Asep Hidayat. Panggil dia Sep. Kamu cerdas dan selalu siap membantu."
         });
 
         let history = JSON.parse(localStorage.getItem('asep_history')) || [];
 
         function renderChat() {
             const box = document.getElementById('chatBox');
-            box.innerHTML = history.length === 0 ? '<div class="msg a-msg">System Active. Welcome back, Sep! Ada tugas apa hari ini?</div>' : '';
+            box.innerHTML = history.length === 0 ? '<div class="msg a-msg">System Active. Welcome back, Sep! Ada perintah baru?</div>' : '';
             history.forEach(m => {
                 const r = m.role === 'user' ? 'u-msg' : 'a-msg';
                 box.innerHTML += `<div class="msg ${r}">${m.parts[0].text}</div>`;
@@ -179,7 +175,6 @@
                 renderChat();
             } catch (e) {
                 load.style.display = 'none';
-                console.error(e);
                 document.getElementById('chatBox').innerHTML += `<div class="msg a-msg" style="color:#ff4444">ERROR: Connection failed, Sep!</div>`;
             }
         };
@@ -187,35 +182,26 @@
     </script>
 
     <script>
-        // DOWNLOADER
+        // DOWNLOADER & GAME LOGIC (SAME AS BEFORE)
         async function dl(t) {
-            const u = document.getElementById('dlUrl').value; if(!u) return alert("Link mana Sep?");
+            const u = document.getElementById('dlUrl').value; if(!u) return;
             const m = document.getElementById('mBox');
             document.getElementById('dlRes').style.display = 'block';
-            m.innerHTML = "Processing data...";
+            m.innerHTML = "Processing...";
             try {
                 const r = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(u)}`).then(res => res.json());
                 const d = r.data;
-                m.innerHTML = t==='video' ? `<video src="${d.play}" controls style="width:100%; border-radius:15px; border:1px solid var(--neon);"></video>` : `<audio src="${d.music}" controls style="width:100%"></audio>`;
+                m.innerHTML = t==='video' ? `<video src="${d.play}" controls style="width:100%; border-radius:15px;"></video>` : `<audio src="${d.music}" controls style="width:100%"></audio>`;
                 document.getElementById('saveB').href = t==='video' ? d.play : d.music;
-            } catch(e) { m.innerHTML = "Failed to fetch media!"; }
+            } catch(e) { m.innerHTML = "Error Sep!"; }
         }
 
-        // XOX GAME
         let b = Array(9).fill("");
         function tap(i) { if(b[i]==="") { b[i]="X"; ref(); if(!chk()) setTimeout(bot, 500); } }
-        function bot() { 
-            let a = b.map((v,i)=>v===""?i:null).filter(v=>v!==null);
-            if(a.length > 0) { b[a[Math.floor(Math.random()*a.length)]]="O"; ref(); chk(); }
-        }
+        function bot() { let a = b.map((v,i)=>v===""?i:null).filter(v=>v!==null); if(a.length > 0) { b[a[Math.floor(Math.random()*a.length)]]="O"; ref(); chk(); } }
         function ref() { document.querySelectorAll('.cell').forEach((v,i)=>v.innerText=b[i]); }
-        function chk() { 
-            const s=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for(let x of s) { if(b[x[0]] && b[x[0]]===b[x[1]] && b[x[0]]===b[x[2]]) { alert(b[x[0]]+" WINS!"); b.fill(""); ref(); return 1; } }
-            if(!b.includes("")) { alert("DRAW!"); b.fill(""); ref(); return 1; } return 0;
-        }
-
-        // CALCULATOR
+        function chk() { const s=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(let x of s) { if(b[x[0]] && b[x[0]]===b[x[1]] && b[x[0]]===b[x[2]]) { alert(b[x[0]]+" WINS!"); b.fill(""); ref(); return 1; } } if(!b.includes("")) { alert("DRAW!"); b.fill(""); ref(); return 1; } return 0; }
+        
         let c = "";
         function cI(v) { c += v; document.getElementById('cDs').innerText = c; }
         function cC() { c = ""; document.getElementById('cDs').innerText = "0"; }
