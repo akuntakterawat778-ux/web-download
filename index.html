@@ -3,49 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASEP HIDAYAT | SUPREME OMNI v10</title>
+    <title>ASEP HIDAYAT | SUPREME OMNI V.15</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --neon: #bc13fe; --cyan: #00f2ff; --bg: #020005; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.1); }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; overflow-x: hidden; }
-        .bg-mesh { position: fixed; inset: 0; z-index: -1; background: radial-gradient(at 0% 0%, rgba(188, 19, 254, 0.2) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.15) 0px, transparent 50%); }
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-        /* --- LOGIN SYSTEM --- */
-        #loginOverlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; transition: 0.8s; }
-        .login-card { background: var(--glass); backdrop-filter: blur(50px); border: 1px solid var(--neon); padding: 40px; border-radius: 35px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2); }
-        .login-card h1 { font-family: 'Orbitron'; font-size: 1.2rem; margin-bottom: 25px; color: var(--cyan); letter-spacing: 3px; }
+    <style>
+        :root {
+            --neon: #bc13fe;
+            --cyan: #00f2ff;
+            --bg: #020005;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(at 0% 0%, rgba(188, 19, 254, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.15) 0px, transparent 50%);
+        }
+
+        /* --- LOGIN GUARD --- */
+        #loginOverlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.8s;
+        }
+
+        .login-card {
+            background: var(--glass);
+            backdrop-filter: blur(50px);
+            border: 1px solid var(--neon);
+            padding: 40px;
+            border-radius: 35px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);
+        }
 
         /* --- MAIN UI --- */
-        #mainContent { display: none; width: 100%; max-width: 550px; flex-direction: column; gap: 25px; opacity: 0; transition: 1s; padding-bottom: 50px; }
+        #mainContent {
+            display: none;
+            width: 100%;
+            max-width: 550px;
+            flex-direction: column;
+            gap: 25px;
+            opacity: 0;
+            transition: 1s;
+            padding-bottom: 50px;
+        }
+
         header { text-align: center; margin: 30px 0; }
         h1.brand { font-family: 'Orbitron'; font-size: 1.6rem; letter-spacing: 6px; color: var(--cyan); text-shadow: 0 0 20px var(--cyan); }
         
-        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 30px; padding: 25px; backdrop-filter: blur(25px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { font-size: 0.8rem; text-transform: uppercase; margin-bottom: 20px; color: #888; letter-spacing: 2px; display: flex; align-items: center; gap: 10px; }
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 25px;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #888;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         h2::before { content:''; width:4px; height:15px; background:var(--neon); border-radius:10px; }
 
-        /* --- CHAT SYSTEM (WA STYLE) --- */
-        #chatBox { height: 350px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.3); border-radius: 20px; margin-bottom: 15px; scroll-behavior: smooth; border: 1px solid rgba(255,255,255,0.05); }
-        .msg { padding: 12px 18px; border-radius: 20px; font-size: 0.85rem; line-height: 1.5; max-width: 80%; }
-        .u-msg { align-self: flex-end; background: var(--neon); color: #fff; border-bottom-right-radius: 2px; font-weight: 700; box-shadow: 0 5px 15px rgba(188, 19, 254, 0.3); }
-        .a-msg { align-self: flex-start; background: rgba(255,255,255,0.1); color: #eee; border-bottom-left-radius: 2px; }
-        #loading { display: none; font-size: 0.7rem; color: var(--cyan); margin: 0 0 10px 10px; font-weight: 800; text-transform: uppercase; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.4; } }
+        /* --- CHAT SYSTEM --- */
+        #chatBox {
+            height: 350px;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
 
-        input { width: 100%; padding: 18px; background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 18px; color: #fff; margin-bottom: 12px; outline: none; transition: 0.3s; font-family: inherit; }
-        input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
-        .btn { padding: 18px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; transition: 0.2s; width: 100%; }
+        .msg { padding: 12px 18px; border-radius: 20px; font-size: 0.85rem; line-height: 1.5; max-width: 80%; }
+        .u-msg { align-self: flex-end; background: var(--neon); color: #fff; border-bottom-right-radius: 2px; font-weight: 700; }
+        .a-msg { align-self: flex-start; background: rgba(255,255,255,0.1); color: #eee; border-bottom-left-radius: 2px; }
+
+        /* --- INPUTS & BUTTONS --- */
+        input {
+            width: 100%;
+            padding: 18px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            color: #fff;
+            margin-bottom: 12px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .btn {
+            padding: 18px;
+            border-radius: 18px;
+            border: none;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            transition: 0.2s;
+            width: 100%;
+        }
+
         .btn-n { background: var(--neon); color: #fff; box-shadow: 0 5px 20px rgba(188, 19, 254, 0.4); }
 
-        /* --- TOOLS UI --- */
+        /* --- GAME BOARD --- */
         .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .cell { aspect-ratio: 1/1; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .c-scr { font-family: 'Orbitron'; font-size: 2rem; text-align: right; color: var(--cyan); padding: 25px; background: #000; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .cell {
+            aspect-ratio: 1/1;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        /* --- CALCULATOR --- */
+        .c-scr { font-family: 'Orbitron'; font-size: 2rem; text-align: right; color: var(--cyan); padding: 25px; background: #000; border-radius: 20px; margin-bottom: 12px; }
         .c-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .c-btn { padding: 18px 0; border-radius: 15px; border: 1px solid var(--border); background: var(--glass); color: #fff; font-weight: 800; cursor: pointer; }
-
-        .footer { text-align: center; margin-top: 20px; font-size: 0.5rem; letter-spacing: 5px; color: #333; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -53,22 +172,20 @@
 
     <div id="loginOverlay">
         <div class="login-card">
-            <h1>ACCESS REQUIRED</h1>
-            <input type="password" id="passInput" placeholder="PIN SYSTEM" style="text-align:center; font-size: 1.2rem; letter-spacing: 5px;">
-            <button class="btn btn-n" onclick="checkPass()">ACTIVATE SYSTEM</button>
-            <p id="err" style="color:#ff4444; font-size:0.7rem; margin-top:15px; font-weight:800; display:none;">INVALID ACCESS KEY!</p>
+            <h1 style="font-family:'Orbitron'; color:var(--cyan); margin-bottom:20px;">SYSTEM LOCKED</h1>
+            <input type="password" id="passInput" placeholder="PIN SYSTEM" style="text-align:center; font-size: 1.5rem; letter-spacing: 5px;">
+            <button class="btn btn-n" onclick="checkPass()">ACTIVATE OMNI</button>
         </div>
     </div>
 
     <div id="mainContent">
-        <header><h1 class="brand">ASEP HIDAYAT</h1><p style="font-size:0.55rem; color:#555; letter-spacing:2px; font-weight:800;">OMNI-OPERATING SYSTEM V.10</p></header>
+        <header><h1 class="brand">ASEP HIDAYAT</h1></header>
 
         <div class="card">
-            <h2>Gemini Core AI [Memory Active]</h2>
+            <h2>Gemini Core AI</h2>
             <div id="chatBox"></div>
-            <div id="loading">Gemini is thinking...</div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="aiIn" placeholder="Type command, Sep..." onkeypress="if(event.key==='Enter') askGemini()" style="margin:0;">
+                <input type="text" id="aiIn" placeholder="Type command, Sep..." onkeypress="if(event.key==='Enter') askGemini()">
                 <button class="btn btn-n" style="width:80px;" onclick="askGemini()">SEND</button>
             </div>
         </div>
@@ -77,12 +194,11 @@
             <h2>Media Downloader</h2>
             <input type="text" id="dlUrl" placeholder="Link TikTok / IG / FB...">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn" style="background:#fff; color:#000;" onclick="dl('video')">GET VIDEO</button>
-                <button class="btn btn-n" onclick="dl('mp3')">GET AUDIO</button>
+                <button class="btn" style="background:#fff; color:#000;" onclick="dl('video')">VIDEO</button>
+                <button class="btn btn-n" onclick="dl('mp3')">AUDIO</button>
             </div>
             <div id="dlRes" style="display:none; margin-top:20px;">
                 <div id="mBox"></div>
-                <a id="saveB" href="#" target="_blank" class="btn btn-n" style="display:block; text-align:center; text-decoration:none; margin-top:15px;">DOWNLOAD FILE</a>
             </div>
         </div>
 
@@ -99,90 +215,65 @@
             <h2>Glass Calculator</h2>
             <div class="c-scr" id="cDs">0</div>
             <div class="c-grid">
-                <button class="c-btn" style="color:#ff4444" onclick="cC()">C</button>
+                <button class="c-btn" onclick="cC()">C</button>
                 <button class="c-btn" onclick="cI('/')">/</button><button class="c-btn" onclick="cI('*')">×</button><button class="c-btn" onclick="cI('-')">-</button>
                 <button class="c-btn" onclick="cI('7')">7</button><button class="c-btn" onclick="cI('8')">8</button><button class="c-btn" onclick="cI('9')">9</button>
                 <button class="c-btn" onclick="cI('+')">+</button>
                 <button class="c-btn" onclick="cI('1')">1</button><button class="c-btn" onclick="cI('2')">2</button><button class="c-btn" onclick="cI('3')">3</button>
-                <button class="c-btn" style="background:var(--neon); grid-row:span 2" onclick="cR()">=</button>
-                <button class="c-btn" style="grid-column:span 3" onclick="cI('0')">0</button>
+                <button class="c-btn" style="background:var(--neon)" onclick="cR()">=</button>
             </div>
         </div>
-
-        <div class="footer">ASEP HIDAYAT © 2026. AUTHENTIC SYSTEM.</div>
     </div>
 
     <script type="module">
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        // 1. LOGIN SYSTEM
         const PIN = "290913";
-        window.checkPass = () => {
-            const val = document.getElementById('passInput').value;
-            if(val === PIN) {
-                document.getElementById('loginOverlay').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    const main = document.getElementById('mainContent');
-                    main.style.display = 'flex';
-                    setTimeout(() => main.style.opacity = '1', 50);
-                }, 800);
-            } else {
-                document.getElementById('err').style.display = 'block';
-                setTimeout(() => document.getElementById('err').style.display = 'none', 2500);
-            }
-        };
-
-        // 2. GEMINI ENGINE - API KEY SUDAH TERPASANG SEP!
         const API_KEY = "AIzaSyBOT0AdkWJbFf0WsvLwgOcP3T9ds4AReZE";
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ 
             model: "gemini-1.5-flash",
-            systemInstruction: "Nama kamu adalah Gemini AI, asisten pribadi milik Asep Hidayat. Panggil dia Sep. Kamu cerdas dan selalu siap membantu."
+            systemInstruction: "Kamu asisten Asep Hidayat. Panggil dia Sep."
         });
 
-        let history = JSON.parse(localStorage.getItem('asep_history')) || [];
-
-        function renderChat() {
-            const box = document.getElementById('chatBox');
-            box.innerHTML = history.length === 0 ? '<div class="msg a-msg">System Active. Welcome back, Sep! Ada perintah baru?</div>' : '';
-            history.forEach(m => {
-                const r = m.role === 'user' ? 'u-msg' : 'a-msg';
-                box.innerHTML += `<div class="msg ${r}">${m.parts[0].text}</div>`;
-            });
-            box.scrollTop = box.scrollHeight;
+        // KONFETI 5 DETIK
+        function celebrate() {
+            var end = Date.now() + (5 * 1000);
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#bc13fe', '#00f2ff'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#bc13fe', '#00f2ff'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
         }
+
+        window.checkPass = () => {
+            if(document.getElementById('passInput').value === PIN) {
+                celebrate();
+                document.getElementById('loginOverlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'flex';
+                    setTimeout(() => document.getElementById('mainContent').style.opacity = '1', 50);
+                }, 800);
+            } else { alert("PIN SALAH!"); }
+        };
 
         window.askGemini = async () => {
             const inp = document.getElementById('aiIn');
-            const load = document.getElementById('loading');
+            const box = document.getElementById('chatBox');
             if(!inp.value) return;
-
-            const txt = inp.value;
-            history.push({ role: "user", parts: [{ text: txt }] });
-            inp.value = "";
-            renderChat();
-            load.style.display = 'block';
-
+            box.innerHTML += `<div class="msg u-msg">${inp.value}</div>`;
             try {
-                const chat = model.startChat({ history: history.slice(0, -1) });
-                const res = await chat.sendMessage(txt);
-                const aiTxt = res.response.text();
-
-                history.push({ role: "model", parts: [{ text: aiTxt }] });
-                localStorage.setItem('asep_history', JSON.stringify(history));
-                load.style.display = 'none';
-                renderChat();
-            } catch (e) {
-                load.style.display = 'none';
-                document.getElementById('chatBox').innerHTML += `<div class="msg a-msg" style="color:#ff4444">ERROR: Connection failed, Sep!</div>`;
-            }
+                const res = await model.generateContent(inp.value);
+                box.innerHTML += `<div class="msg a-msg">${res.response.text()}</div>`;
+            } catch (e) { box.innerHTML += `<div class="msg a-msg">Error koneksi, Sep!</div>`; }
+            inp.value = "";
+            box.scrollTop = box.scrollHeight;
         };
-        renderChat();
     </script>
 
     <script>
-        // DOWNLOADER & GAME LOGIC (SAME AS BEFORE)
+        // DOWNLOADER LOGIC
         async function dl(t) {
             const u = document.getElementById('dlUrl').value; if(!u) return;
             const m = document.getElementById('mBox');
@@ -192,16 +283,16 @@
                 const r = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(u)}`).then(res => res.json());
                 const d = r.data;
                 m.innerHTML = t==='video' ? `<video src="${d.play}" controls style="width:100%; border-radius:15px;"></video>` : `<audio src="${d.music}" controls style="width:100%"></audio>`;
-                document.getElementById('saveB').href = t==='video' ? d.play : d.music;
             } catch(e) { m.innerHTML = "Error Sep!"; }
         }
 
+        // GAME LOGIC
         let b = Array(9).fill("");
-        function tap(i) { if(b[i]==="") { b[i]="X"; ref(); if(!chk()) setTimeout(bot, 500); } }
-        function bot() { let a = b.map((v,i)=>v===""?i:null).filter(v=>v!==null); if(a.length > 0) { b[a[Math.floor(Math.random()*a.length)]]="O"; ref(); chk(); } }
+        function tap(i) { if(b[i]==="") { b[i]="X"; ref(); setTimeout(bot, 500); } }
+        function bot() { let a = b.map((v,i)=>v===""?i:null).filter(v=>v!==null); if(a.length>0) { b[a[Math.floor(Math.random()*a.length)]]="O"; ref(); } }
         function ref() { document.querySelectorAll('.cell').forEach((v,i)=>v.innerText=b[i]); }
-        function chk() { const s=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(let x of s) { if(b[x[0]] && b[x[0]]===b[x[1]] && b[x[0]]===b[x[2]]) { alert(b[x[0]]+" WINS!"); b.fill(""); ref(); return 1; } } if(!b.includes("")) { alert("DRAW!"); b.fill(""); ref(); return 1; } return 0; }
-        
+
+        // CALC LOGIC
         let c = "";
         function cI(v) { c += v; document.getElementById('cDs').innerText = c; }
         function cC() { c = ""; document.getElementById('cDs').innerText = "0"; }
