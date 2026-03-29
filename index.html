@@ -3,56 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASEP HIDAYAT | GLOBAL TIME</title>
+    <title>ASEP HIDAYAT | GLOBAL</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --n: #bc13fe; --bg: #000000; --b: rgba(255,255,255,0.05); --c: #00f2ff; --gold: #ffd700; }
+        :root { --n: #bc13fe; --bg: #000; --b: rgba(255,255,255,0.05); --c: #00f2ff; --gold: #ffd700; }
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Inter', sans-serif; }
-        
         body { background: var(--bg); color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; }
         
-        /* LOGIN LAYER (PIN TETEP SAMA) */
-        #loginLayer { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; transition: 0.8s ease; }
-        .login-card { text-align: center; width: 90%; max-width: 320px; }
-        .pin-input { background: none; border: none; border-bottom: 1px solid var(--b); color: #fff; font-size: 1.5rem; text-align: center; width: 100%; margin-bottom: 25px; letter-spacing: 8px; font-family: 'Orbitron'; }
-
-        /* DASHBOARD */
-        #mainDash { display: none; width: 100%; max-width: 600px; padding: 25px; flex-direction: column; gap: 20px; opacity: 0; transition: 1.2s; }
+        /* PIN VAULT (V.36 STYLE) */
+        #loginLayer { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #1a0033 0%, #000 100%); transition: 1s ease; }
+        .vault-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(188, 19, 254, 0.3); padding: 50px 30px; border-radius: 40px; text-align: center; backdrop-filter: blur(25px); width: 90%; max-width: 350px; box-shadow: 0 0 30px rgba(188, 19, 254, 0.1); }
+        .pin-input { background: rgba(0,0,0,0.5); border: 1px solid var(--b); color: #fff; font-size: 1.8rem; text-align: center; width: 100%; padding: 20px; border-radius: 20px; letter-spacing: 15px; font-family: 'Orbitron'; margin-bottom: 20px; }
         
-        /* CLOCK AREA */
-        .clock-container { text-align: center; padding: 30px 0; border-bottom: 1px solid var(--b); }
-        #mainTime { font-family: 'Orbitron'; font-size: 4rem; font-weight: 700; color: #fff; letter-spacing: -2px; }
-        #mainDate { font-size: 0.7rem; color: var(--n); letter-spacing: 4px; margin-top: 5px; font-weight: 700; text-transform: uppercase; }
+        /* MAIN DASHBOARD */
+        #mainDash { display: none; width: 100%; max-width: 550px; padding: 25px; flex-direction: column; gap: 20px; opacity: 0; transition: 1s; }
+        .clock-container { text-align: center; padding: 10px 0; }
+        #mainTime { font-family: 'Orbitron'; font-size: 4rem; font-weight: 700; letter-spacing: -2px; }
+        #mainDate { font-size: 0.7rem; color: var(--n); letter-spacing: 4px; font-weight: 700; }
 
         .card { background: rgba(255,255,255,0.02); border: 1px solid var(--b); border-radius: 24px; padding: 20px; backdrop-filter: blur(20px); }
         
-        /* WORLD TIME SCROLLABLE GRID (130+ CITIES) */
-        .world-list-container { max-height: 350px; overflow-y: auto; padding-right: 10px; margin-top: 10px; }
-        .world-list-container::-webkit-scrollbar { width: 4px; }
-        .world-list-container::-webkit-scrollbar-thumb { background: var(--b); border-radius: 10px; }
-
-        .city-item { background: rgba(255,255,255,0.03); padding: 12px 18px; border-radius: 14px; border: 1px solid var(--b); display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .city-item.special { border: 1px solid var(--gold); background: rgba(255, 215, 0, 0.05); }
-        .city-name { font-size: 0.75rem; color: #aaa; font-weight: 600; text-transform: uppercase; }
-        .city-time { font-family: 'Orbitron'; font-size: 0.85rem; color: var(--c); }
-        .city-item.special .city-name { color: var(--gold); }
-
-        /* DOWNLOADER */
-        .dl-input { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--b); border-radius: 12px; color: #fff; font-size: 0.8rem; margin-bottom: 10px; }
-        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: #fff; color: #000; font-weight: 700; cursor: pointer; font-size: 0.75rem; }
-
-        .footer { display: flex; justify-content: space-between; font-size: 0.6rem; color: #333; margin-top: 10px; }
+        /* DOWNLOADER UNIT */
+        .dl-input { width: 100%; padding: 18px; background: rgba(0,0,0,0.6); border: 1px solid var(--b); border-radius: 16px; color: #fff; font-size: 0.8rem; margin-bottom: 12px; border: 1px solid var(--b); }
+        .dl-input:focus { border-color: var(--n); }
+        .btn-dl { width: 100%; padding: 18px; border-radius: 16px; border: none; background: linear-gradient(45deg, var(--n), #7a09aa); color: #fff; font-weight: 800; font-size: 0.75rem; letter-spacing: 2px; cursor: pointer; }
+        
+        /* WORLD TIME SCROLL */
+        .world-list { max-height: 200px; overflow-y: auto; margin-top: 10px; }
+        .world-list::-webkit-scrollbar { width: 3px; }
+        .city-item { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--b); }
+        .special { border-color: var(--gold); color: var(--gold); }
     </style>
 </head>
 <body>
 
     <div id="loginLayer">
-        <div class="login-card">
-            <input type="password" id="pI" class="pin-input" maxlength="6" placeholder="PIN">
-            <button onclick="checkPin()" class="btn">ACCESS</button>
+        <div class="vault-card">
+            <h1 style="font-family:Orbitron; font-size:0.6rem; letter-spacing:5px; margin-bottom:30px; color:var(--n)">VERIFY ACCESS</h1>
+            <input type="password" id="pI" class="pin-input" maxlength="6" placeholder="••••••">
+            <button onclick="checkPin()" class="btn-dl">UNLOCK DASHBOARD</button>
         </div>
     </div>
 
@@ -63,120 +55,114 @@
         </div>
 
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h2 style="font-size: 0.9rem;">ASEP HIDAYAT</h2>
-                    <div style="font-size: 0.6rem; color: #555;">ID: 290913</div>
-                </div>
-                <div id="ip" style="font-family: monospace; font-size: 0.65rem; color: var(--n);">...</div>
-            </div>
+            <h2 style="font-size:0.6rem; color:#444; letter-spacing:2px; margin-bottom:12px">AUTO-DETECT MULTI DOWNLOADER</h2>
+            <input type="text" class="dl-input" id="dlUrl" placeholder="Paste TikTok / IG / YT / FB Link...">
+            <button class="btn-dl" id="dlBtn" onclick="processDownload()">FETCH DATA</button>
+            <p id="status" style="font-size:0.55rem; color:var(--c); margin-top:10px; text-align:center; display:none;">SYSTEM: Processing link...</p>
+        </div>
+
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div><span style="font-size:0.8rem; font-weight:700;">ASEP HIDAYAT</span><br><span style="font-size:0.55rem; color:#444;">ID: 290913</span></div>
+            <div id="ip" style="font-family:monospace; font-size:0.6rem; color:var(--n);">0.0.0.0</div>
         </div>
 
         <div class="card">
-            <h3 style="font-size: 0.6rem; color: #444; letter-spacing: 2px; margin-bottom: 15px;">GLOBAL TIME INDEX</h3>
-            <div class="world-list-container" id="worldList">
-                </div>
+            <h3 style="font-size: 0.55rem; color: #444; letter-spacing: 2px; margin-bottom: 12px;">GLOBAL TIME INDEX</h3>
+            <div class="world-list" id="worldList"></div>
         </div>
 
-        <div class="card">
-            <input type="text" class="dl-input" id="dlUrl" placeholder="Media link...">
-            <button class="btn" onclick="startDl()">DOWNLOAD</button>
-        </div>
-
-        <div class="footer">
+        <div style="display:flex; justify-content:space-between; font-size:0.5rem; color:#222;">
             <span>© 2026 ASEP HIDAYAT</span>
-            <span>V.34 STABLE</span>
+            <span>V.37 STABLE BRIDGE</span>
         </div>
     </div>
 
     <script>
         const PIN_KEY = "290913";
-        
-        // List 130+ Kota Dunia (Mekah Tetap Nomor 1)
         const cities = [
             { name: "MAKKAH (SAUDI ARABIA)", tz: "Asia/Riyadh", special: true },
             { name: "JAKARTA (INDONESIA)", tz: "Asia/Jakarta" },
             { name: "TOKYO (JAPAN)", tz: "Asia/Tokyo" },
             { name: "LONDON (UNITED KINGDOM)", tz: "Europe/London" },
-            { name: "NEW YORK (USA)", tz: "America/New_York" },
-            { name: "SINGAPORE (SINGAPORE)", tz: "Asia/Singapore" },
-            { name: "PARIS (FRANCE)", tz: "Europe/Paris" },
-            { name: "DUBAI (UAE)", tz: "Asia/Dubai" },
-            { name: "SEOUL (SOUTH KOREA)", tz: "Asia/Seoul" },
-            { name: "SYDNEY (AUSTRALIA)", tz: "Australia/Sydney" },
-            { name: "BERLIN (GERMANY)", tz: "Europe/Berlin" },
-            { name: "MOSCOW (RUSSIA)", tz: "Europe/Moscow" },
-            { name: "LOS ANGELES (USA)", tz: "America/Los_Angeles" },
-            { name: "BANGKOK (THAILAND)", tz: "Asia/Bangkok" },
-            { name: "KUALA LUMPUR (MALAYSIA)", tz: "Asia/Kuala_Lumpur" },
-            { name: "HONG KONG (CHINA)", tz: "Asia/Hong_Kong" },
-            { name: "AMSTERDAM (NETHERLANDS)", tz: "Europe/Amsterdam" },
-            { name: "BEIJING (CHINA)", tz: "Asia/Shanghai" },
-            { name: "ROME (ITALY)", tz: "Europe/Rome" },
-            { name: "CAIRO (EGYPT)", tz: "Africa/Cairo" },
-            { name: "ISTANBUL (TURKEY)", tz: "Europe/Istanbul" },
-            { name: "ZURICH (SWITZERLAND)", tz: "Europe/Zurich" },
-            { name: "CHICAGO (USA)", tz: "America/Chicago" },
-            { name: "TORONTO (CANADA)", tz: "America/Toronto" },
-            { name: "MADRID (SPAIN)", tz: "Europe/Madrid" },
-            { name: "MUMBAI (INDIA)", tz: "Asia/Kolkata" },
-            { name: "SAO PAULO (BRAZIL)", tz: "America/Sao_Paulo" },
-            { name: "MEXICO CITY (MEXICO)", tz: "America/Mexico_City" },
-            { name: "CAPETOWN (SOUTH AFRICA)", tz: "Africa/Johannesburg" },
-            { name: "SEOUL (SOUTH KOREA)", tz: "Asia/Seoul" },
-            // Loop sisa kota lainnya bisa ditambah secara masif di sini
+            { name: "NEW YORK (USA)", tz: "America/New_York" }
         ];
 
-        // Generator Kota Sisa (Biar Genap 130+)
-        const zones = Intl.supportedValuesOf('timeZone');
-        zones.slice(0, 110).forEach(tz => {
-            if(!cities.find(c => c.tz === tz)) {
-                cities.push({ name: tz.split('/').pop().replace('_', ' ').toUpperCase(), tz: tz });
-            }
+        // Fill to 130 cities
+        Intl.supportedValuesOf('timeZone').slice(0, 125).forEach(tz => {
+            if(!cities.find(c => c.tz === tz)) cities.push({ name: tz.split('/').pop().replace(/_/g, ' ').toUpperCase(), tz: tz });
         });
 
         function checkPin() {
             if(document.getElementById('pI').value === PIN_KEY) {
+                confetti({ particleCount: 150, spread: 60, colors: ['#bc13fe', '#00f2ff'] });
                 document.getElementById('loginLayer').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('loginLayer').style.display = 'none';
-                    const dash = document.getElementById('mainDash');
-                    dash.style.display = 'flex';
-                    setTimeout(() => dash.style.opacity = '1', 50);
-                    startTime();
-                    fetchIP();
+                    document.getElementById('mainDash').style.display = 'flex';
+                    setTimeout(() => document.getElementById('mainDash').style.opacity = '1', 50);
+                    startTime(); fetchIP();
                 }, 800);
             } else { alert("WRONG PIN"); document.getElementById('pI').value = ""; }
+        }
+
+        // --- CENTRAL DOWNLOADER ENGINE ---
+        async function processDownload() {
+            const url = document.getElementById('dlUrl').value;
+            const btn = document.getElementById('dlBtn');
+            const status = document.getElementById('status');
+
+            if(!url) return alert("Paste linknya dulu Sep!");
+
+            btn.disabled = true;
+            btn.innerText = "PROCESSING...";
+            status.style.display = "block";
+
+            try {
+                // Kita pake endpoint universal bridge (AIO)
+                const api = `https://api.vreden.my.id/api/download/allinone?url=${encodeURIComponent(url)}`;
+                const response = await fetch(api);
+                const data = await response.json();
+
+                if(data.status && data.result) {
+                    // Cek tipe media (video/image)
+                    const downloadUrl = data.result.video || data.result.url || data.result.mp4;
+                    window.open(downloadUrl, '_blank');
+                    status.innerText = "SUCCESS: Media Found!";
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                alert("API Limit atau Link Salah. Gunakan link lain Sep!");
+                status.innerText = "ERROR: API Busy.";
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "FETCH DATA";
+                setTimeout(() => { status.style.display = "none"; }, 3000);
+            }
         }
 
         function startTime() {
             const listEl = document.getElementById('worldList');
             const update = () => {
                 const now = new Date();
-                document.getElementById('mainTime').innerText = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit' });
-                document.getElementById('mainDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
-
+                document.getElementById('mainTime').innerText = now.toLocaleTimeString('id-ID', { hour12:false, hour:'2-digit', minute:'2-digit' });
+                document.getElementById('mainDate').innerText = now.toLocaleDateString('en-US', { weekday:'long', day:'numeric', month:'long' });
                 let html = "";
                 cities.forEach(c => {
-                    const timeStr = now.toLocaleTimeString('id-ID', { timeZone: c.tz, hour12: false, hour: '2-digit', minute: '2-digit' });
-                    html += `<div class="city-item ${c.special ? 'special' : ''}">
-                                <span class="city-name">${c.name}</span>
-                                <span class="city-time">${timeStr}</span>
+                    const timeStr = now.toLocaleTimeString('id-ID', { timeZone: c.tz, hour12:false, hour:'2-digit', minute:'2-digit' });
+                    html += `<div class="city-item ${c.special?'special':''}">
+                                <span style="font-size:0.6rem; font-weight:700;">${c.name}</span>
+                                <span style="font-family:Orbitron; font-size:0.8rem;">${timeStr}</span>
                              </div>`;
                 });
                 listEl.innerHTML = html;
             };
-            setInterval(update, 1000);
-            update();
+            setInterval(update, 1000); update();
         }
 
         function fetchIP() {
-            fetch('https://api.ipify.org?format=json')
-                .then(r => r.json()).then(d => document.getElementById('ip').innerText = d.ip)
-                .catch(() => document.getElementById('ip').innerText = "127.0.0.1");
+            fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => document.getElementById('ip').innerText = d.ip);
         }
-
-        function startDl() { alert("Processing link..."); }
     </script>
 </body>
 </html>
