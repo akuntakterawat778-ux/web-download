@@ -3,93 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASEP HIDAYAT | GLOBAL</title>
+    <title>ASEP HIDAYAT | GLOBAL TIME</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --n: #bc13fe; --bg: #000000; --b: rgba(255,255,255,0.05); --c: #00f2ff; }
+        :root { --n: #bc13fe; --bg: #000000; --b: rgba(255,255,255,0.05); --c: #00f2ff; --gold: #ffd700; }
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Inter', sans-serif; }
         
-        body { background: var(--bg); color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        body { background: var(--bg); color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; }
         
-        /* LOGIN LAYER */
+        /* LOGIN LAYER (PIN TETEP SAMA) */
         #loginLayer { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; transition: 0.8s ease; }
         .login-card { text-align: center; width: 90%; max-width: 320px; }
         .pin-input { background: none; border: none; border-bottom: 1px solid var(--b); color: #fff; font-size: 1.5rem; text-align: center; width: 100%; margin-bottom: 25px; letter-spacing: 8px; font-family: 'Orbitron'; }
 
         /* DASHBOARD */
-        #mainDash { display: none; width: 100%; max-width: 500px; padding: 25px; flex-direction: column; gap: 20px; opacity: 0; transition: 1.2s; }
+        #mainDash { display: none; width: 100%; max-width: 600px; padding: 25px; flex-direction: column; gap: 20px; opacity: 0; transition: 1.2s; }
         
-        /* BIG CLOCK AREA */
-        .clock-container { text-align: center; padding: 40px 0; border-bottom: 1px solid var(--b); }
-        #mainTime { font-family: 'Orbitron'; font-size: 4.5rem; font-weight: 700; color: #fff; line-height: 1; letter-spacing: -2px; }
-        #mainDate { font-size: 0.7rem; color: var(--n); letter-spacing: 4px; margin-top: 10px; font-weight: 700; text-transform: uppercase; }
+        /* CLOCK AREA */
+        .clock-container { text-align: center; padding: 30px 0; border-bottom: 1px solid var(--b); }
+        #mainTime { font-family: 'Orbitron'; font-size: 4rem; font-weight: 700; color: #fff; letter-spacing: -2px; }
+        #mainDate { font-size: 0.7rem; color: var(--n); letter-spacing: 4px; margin-top: 5px; font-weight: 700; text-transform: uppercase; }
 
         .card { background: rgba(255,255,255,0.02); border: 1px solid var(--b); border-radius: 24px; padding: 20px; backdrop-filter: blur(20px); }
         
-        /* WORLD TIME GRID */
-        .world-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-        .city-item { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 14px; border: 1px solid var(--b); display: flex; justify-content: space-between; align-items: center; }
-        .city-name { font-size: 0.6rem; color: #666; font-weight: 700; }
-        .city-time { font-family: 'Orbitron'; font-size: 0.8rem; color: var(--c); }
+        /* WORLD TIME SCROLLABLE GRID (130+ CITIES) */
+        .world-list-container { max-height: 350px; overflow-y: auto; padding-right: 10px; margin-top: 10px; }
+        .world-list-container::-webkit-scrollbar { width: 4px; }
+        .world-list-container::-webkit-scrollbar-thumb { background: var(--b); border-radius: 10px; }
 
-        /* DOWNLOADER & INFO */
+        .city-item { background: rgba(255,255,255,0.03); padding: 12px 18px; border-radius: 14px; border: 1px solid var(--b); display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .city-item.special { border: 1px solid var(--gold); background: rgba(255, 215, 0, 0.05); }
+        .city-name { font-size: 0.75rem; color: #aaa; font-weight: 600; text-transform: uppercase; }
+        .city-time { font-family: 'Orbitron'; font-size: 0.85rem; color: var(--c); }
+        .city-item.special .city-name { color: var(--gold); }
+
+        /* DOWNLOADER */
         .dl-input { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--b); border-radius: 12px; color: #fff; font-size: 0.8rem; margin-bottom: 10px; }
-        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: #fff; color: #000; font-weight: 700; cursor: pointer; font-size: 0.75rem; letter-spacing: 1px; }
+        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background: #fff; color: #000; font-weight: 700; cursor: pointer; font-size: 0.75rem; }
 
-        .footer-info { display: flex; justify-content: space-between; align-items: center; font-size: 0.6rem; color: #444; margin-top: 10px; }
+        .footer { display: flex; justify-content: space-between; font-size: 0.6rem; color: #333; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div id="loginLayer">
         <div class="login-card">
-            <input type="password" id="pI" class="pin-input" maxlength="6" placeholder="ENTER PIN">
-            <button onclick="checkPin()" class="btn">ACCESS SYSTEM</button>
+            <input type="password" id="pI" class="pin-input" maxlength="6" placeholder="PIN">
+            <button onclick="checkPin()" class="btn">ACCESS</button>
         </div>
     </div>
 
     <div id="mainDash">
         <div class="clock-container">
             <div id="mainTime">00:00</div>
-            <div id="mainDate">SUNDAY, 29 MARCH</div>
+            <div id="mainDate">LOADING...</div>
         </div>
 
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <h2 style="font-size: 0.9rem; letter-spacing: 1px;">ASEP HIDAYAT</h2>
-                    <div style="font-size: 0.6rem; color: #555; margin-top: 2px;">ID: 290913</div>
+                    <h2 style="font-size: 0.9rem;">ASEP HIDAYAT</h2>
+                    <div style="font-size: 0.6rem; color: #555;">ID: 290913</div>
                 </div>
-                <div id="ip" style="font-family: monospace; font-size: 0.65rem; color: var(--n);">0.0.0.0</div>
+                <div id="ip" style="font-family: monospace; font-size: 0.65rem; color: var(--n);">...</div>
             </div>
         </div>
 
         <div class="card">
-            <h3 style="font-size: 0.6rem; color: #444; letter-spacing: 2px; margin-bottom: 10px;">WORLD CLOCK</h3>
-            <div class="world-grid">
-                <div class="city-item"><span class="city-name">JKT</span><span class="city-time" id="jkt">00:00</span></div>
-                <div class="city-item"><span class="city-name">TYO</span><span class="city-time" id="tyo">00:00</span></div>
-                <div class="city-item"><span class="city-name">LDN</span><span class="city-time" id="ldn">00:00</span></div>
-                <div class="city-item"><span class="city-name">NYC</span><span class="city-time" id="nyc">00:00</span></div>
-            </div>
+            <h3 style="font-size: 0.6rem; color: #444; letter-spacing: 2px; margin-bottom: 15px;">GLOBAL TIME INDEX</h3>
+            <div class="world-list-container" id="worldList">
+                </div>
         </div>
 
         <div class="card">
-            <input type="text" class="dl-input" id="dlUrl" placeholder="Paste link here...">
+            <input type="text" class="dl-input" id="dlUrl" placeholder="Media link...">
             <button class="btn" onclick="startDl()">DOWNLOAD</button>
         </div>
 
-        <div class="footer-info">
+        <div class="footer">
             <span>© 2026 ASEP HIDAYAT</span>
-            <span style="letter-spacing: 2px;">V.33 STABLE</span>
+            <span>V.34 STABLE</span>
         </div>
     </div>
 
     <script>
         const PIN_KEY = "290913";
+        
+        // List 130+ Kota Dunia (Mekah Tetap Nomor 1)
+        const cities = [
+            { name: "MAKKAH (SAUDI ARABIA)", tz: "Asia/Riyadh", special: true },
+            { name: "JAKARTA (INDONESIA)", tz: "Asia/Jakarta" },
+            { name: "TOKYO (JAPAN)", tz: "Asia/Tokyo" },
+            { name: "LONDON (UNITED KINGDOM)", tz: "Europe/London" },
+            { name: "NEW YORK (USA)", tz: "America/New_York" },
+            { name: "SINGAPORE (SINGAPORE)", tz: "Asia/Singapore" },
+            { name: "PARIS (FRANCE)", tz: "Europe/Paris" },
+            { name: "DUBAI (UAE)", tz: "Asia/Dubai" },
+            { name: "SEOUL (SOUTH KOREA)", tz: "Asia/Seoul" },
+            { name: "SYDNEY (AUSTRALIA)", tz: "Australia/Sydney" },
+            { name: "BERLIN (GERMANY)", tz: "Europe/Berlin" },
+            { name: "MOSCOW (RUSSIA)", tz: "Europe/Moscow" },
+            { name: "LOS ANGELES (USA)", tz: "America/Los_Angeles" },
+            { name: "BANGKOK (THAILAND)", tz: "Asia/Bangkok" },
+            { name: "KUALA LUMPUR (MALAYSIA)", tz: "Asia/Kuala_Lumpur" },
+            { name: "HONG KONG (CHINA)", tz: "Asia/Hong_Kong" },
+            { name: "AMSTERDAM (NETHERLANDS)", tz: "Europe/Amsterdam" },
+            { name: "BEIJING (CHINA)", tz: "Asia/Shanghai" },
+            { name: "ROME (ITALY)", tz: "Europe/Rome" },
+            { name: "CAIRO (EGYPT)", tz: "Africa/Cairo" },
+            { name: "ISTANBUL (TURKEY)", tz: "Europe/Istanbul" },
+            { name: "ZURICH (SWITZERLAND)", tz: "Europe/Zurich" },
+            { name: "CHICAGO (USA)", tz: "America/Chicago" },
+            { name: "TORONTO (CANADA)", tz: "America/Toronto" },
+            { name: "MADRID (SPAIN)", tz: "Europe/Madrid" },
+            { name: "MUMBAI (INDIA)", tz: "Asia/Kolkata" },
+            { name: "SAO PAULO (BRAZIL)", tz: "America/Sao_Paulo" },
+            { name: "MEXICO CITY (MEXICO)", tz: "America/Mexico_City" },
+            { name: "CAPETOWN (SOUTH AFRICA)", tz: "Africa/Johannesburg" },
+            { name: "SEOUL (SOUTH KOREA)", tz: "Asia/Seoul" },
+            // Loop sisa kota lainnya bisa ditambah secara masif di sini
+        ];
+
+        // Generator Kota Sisa (Biar Genap 130+)
+        const zones = Intl.supportedValuesOf('timeZone');
+        zones.slice(0, 110).forEach(tz => {
+            if(!cities.find(c => c.tz === tz)) {
+                cities.push({ name: tz.split('/').pop().replace('_', ' ').toUpperCase(), tz: tz });
+            }
+        });
 
         function checkPin() {
             if(document.getElementById('pI').value === PIN_KEY) {
@@ -102,29 +146,25 @@
                     startTime();
                     fetchIP();
                 }, 800);
-            } else {
-                alert("WRONG PIN");
-                document.getElementById('pI').value = "";
-            }
+            } else { alert("WRONG PIN"); document.getElementById('pI').value = ""; }
         }
 
         function startTime() {
+            const listEl = document.getElementById('worldList');
             const update = () => {
                 const now = new Date();
-                
-                // Main Clock
                 document.getElementById('mainTime').innerText = now.toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit' });
-                
-                // Main Date
-                const options = { weekday: 'long', day: 'numeric', month: 'long' };
-                document.getElementById('mainDate').innerText = now.toLocaleDateString('en-US', options);
+                document.getElementById('mainDate').innerText = now.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
 
-                // World Times
-                const getTime = (tz) => now.toLocaleTimeString('id-ID', { timeZone: tz, hour12: false, hour: '2-digit', minute: '2-digit' });
-                document.getElementById('jkt').innerText = getTime('Asia/Jakarta');
-                document.getElementById('tyo').innerText = getTime('Asia/Tokyo');
-                document.getElementById('ldn').innerText = getTime('Europe/London');
-                document.getElementById('nyc').innerText = getTime('America/New_York');
+                let html = "";
+                cities.forEach(c => {
+                    const timeStr = now.toLocaleTimeString('id-ID', { timeZone: c.tz, hour12: false, hour: '2-digit', minute: '2-digit' });
+                    html += `<div class="city-item ${c.special ? 'special' : ''}">
+                                <span class="city-name">${c.name}</span>
+                                <span class="city-time">${timeStr}</span>
+                             </div>`;
+                });
+                listEl.innerHTML = html;
             };
             setInterval(update, 1000);
             update();
@@ -136,11 +176,7 @@
                 .catch(() => document.getElementById('ip').innerText = "127.0.0.1");
         }
 
-        function startDl() {
-            const url = document.getElementById('dlUrl').value;
-            if(!url) return alert("Link empty");
-            alert("Fetching data...");
-        }
+        function startDl() { alert("Processing link..."); }
     </script>
 </body>
 </html>
